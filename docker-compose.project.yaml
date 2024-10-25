@@ -1,0 +1,96 @@
+services:
+  opensearch-node1:
+    image: opensearchproject/opensearch:2.9.0
+    container_name: opensearch-node1
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node1
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "plugins.security.disabled=true"
+      - "network.host=0.0.0.0"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data1:/usr/share/opensearch/data
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+
+  opensearch-node2:
+    image: opensearchproject/opensearch:2.9.0
+    container_name: opensearch-node2
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node2
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "plugins.security.disabled=true"
+      - "network.host=0.0.0.0"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data2:/usr/share/opensearch/data
+    ports:
+      - "9201:9200"
+      - "9601:9600"
+
+  opensearch-node3:
+    image: opensearchproject/opensearch:2.9.0
+    container_name: opensearch-node3
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node3
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "plugins.security.disabled=true"
+      - "network.host=0.0.0.0"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data3:/usr/share/opensearch/data
+    ports:
+      - "9202:9200"
+      - "9602:9600"
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.9.0
+    container_name: opensearch-dashboards
+    ports:
+      - "5601:5601"
+    environment:
+      OPENSEARCH_HOSTS: '["http://opensearch-node1:9200","http://opensearch-node2:9200","http://opensearch-node3:9200"]'
+    depends_on:
+      - opensearch-node1
+      - opensearch-node2
+      - opensearch-node3
+
+  webapp:
+    build: ./webapp
+    container_name: go-webapp
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_PORT=8080
+      - OPENSEARCH_URL=http://opensearch-node1:9200,http://opensearch-node2:9200,http://opensearch-node3:9200
+    depends_on:
+      - opensearch-node1
+      - opensearch-node2
+      - opensearch-node3
+
+volumes:
+  opensearch-data1:
+  opensearch-data2:
+  opensearch-data3:
