@@ -3,15 +3,15 @@ services:
     image: opensearchproject/opensearch:2.9.0
     container_name: opensearch-node1
     environment:
-      - cluster.name=opensearch-cluster
+      - cluster.name=${CLUSTER_NAME:-opensearch-cluster}
+      - OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE:-512m} -Xmx${JVM_HEAP_SIZE:-512m} # Set min and max JVM heap sizes to at least 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD:-admin}    # Sets the admin user password
+      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME:-admin}
+      - plugins.security.disabled=${SECURITY_DISABLED:-true}
       - node.name=opensearch-node1
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE} -Xmx${JVM_HEAP_SIZE}" # Set min and max JVM heap sizes to at least 50% of system RAM
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}    # Sets the admin user password
-      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME}
-      - "plugins.security.disabled=${SECURITY_ENABLED}"
       - "network.host=0.0.0.0"
     ulimits:
       memlock:
@@ -29,15 +29,15 @@ services:
     image: opensearchproject/opensearch:2.9.0
     container_name: opensearch-node2
     environment:
-      - cluster.name=opensearch-cluster
+      - cluster.name=${CLUSTER_NAME:-opensearch-cluster}
+      - OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE:-512m} -Xmx${JVM_HEAP_SIZE:-512m} # Set min and max JVM heap sizes to at least 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD:-admin}    # Sets the admin user password
+      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME:-admin}
+      - plugins.security.disabled=${SECURITY_DISABLED:-true}
       - node.name=opensearch-node2
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE} -Xmx${JVM_HEAP_SIZE}" # Set min and max JVM heap sizes to at least 50% of system RAM
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}    # Sets the admin user password
-      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME}
-      - "plugins.security.disabled=${SECURITY_ENABLED}"
       - "network.host=0.0.0.0"
     ulimits:
       memlock:
@@ -55,15 +55,15 @@ services:
     image: opensearchproject/opensearch:2.9.0
     container_name: opensearch-node3
     environment:
-      - cluster.name=opensearch-cluster
+      - cluster.name=${CLUSTER_NAME:-opensearch-cluster}
+      - OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE:-512m} -Xmx${JVM_HEAP_SIZE:-512m} # Set min and max JVM heap sizes to at least 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD:-admin}    # Sets the admin user password
+      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME:-admin}
+      - plugins.security.disabled=${SECURITY_DISABLED:-true}
       - node.name=opensearch-node3
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE} -Xmx${JVM_HEAP_SIZE}" # Set min and max JVM heap sizes to at least 50% of system RAM
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}    # Sets the admin user password
-      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME}
-      - "plugins.security.disabled=${SECURITY_ENABLED}"
       - "network.host=0.0.0.0"
     ulimits:
       memlock:
