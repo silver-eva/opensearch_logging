@@ -5,14 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
-const openSearchURL = "http://opensearch-node:9200/logs/_doc" // OpenSearch endpoint
+var openSearchURLs []string
 
-// LogEntry represents the log structure
 type LogEntry struct {
 	Timestamp string `json:"timestamp"`
 	Method    string `json:"method"`
@@ -21,6 +22,9 @@ type LogEntry struct {
 }
 
 func main() {
+	// Load OpenSearch URLs from the environment variable
+	openSearchURLs = strings.Split(os.Getenv("OPENSEARCH_URL"), ",")
+
 	// Define a simple HTTP handler
 	http.HandleFunc("/", logHandler)
 
@@ -35,7 +39,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-// logHandler handles incoming HTTP requests and logs them to OpenSearch
+// logHandler handles incoming HTTP requests and logs them to a random OpenSearch node
 func logHandler(w http.ResponseWriter, r *http.Request) {
 	logEntry := LogEntry{
 		Timestamp: time.Now().Format(time.RFC3339),
@@ -51,10 +55,11 @@ func logHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Send the log entry to OpenSearch
-	resp, err := http.Post(openSearchURL, "application/json", bytes.NewBuffer(logData))
+	// Send the log entry to a random OpenSearch node
+	nodeURL := openSearchURLs[rand.Intn(len(openSearchURLs))]
+	resp, err := http.Post(fmt.Sprintf("%s/logs/_doc", nodeURL), "application/json", bytes.NewBuffer(logData))
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error sending log to OpenSearch: %v", err), http.StatusInternalServerError)
+		http.Error(w, "Error sending log to OpenSearch", http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
