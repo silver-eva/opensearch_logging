@@ -1,6 +1,6 @@
 services:
   opensearch-node1:
-    image: opensearchproject/opensearch:2.9.0
+    image: opensearchproject/opensearch:latest
     container_name: opensearch-node1
     environment:
       - cluster.name=${CLUSTER_NAME:-opensearch-cluster}
@@ -26,7 +26,7 @@ services:
       - cluster_network
 
   opensearch-node2:
-    image: opensearchproject/opensearch:2.9.0
+    image: opensearchproject/opensearch:latest
     container_name: opensearch-node2
     environment:
       - cluster.name=${CLUSTER_NAME:-opensearch-cluster}
@@ -52,7 +52,7 @@ services:
       - cluster_network
 
   opensearch-node3:
-    image: opensearchproject/opensearch:2.9.0
+    image: opensearchproject/opensearch:latest
     container_name: opensearch-node3
     environment:
       - cluster.name=${CLUSTER_NAME:-opensearch-cluster}
@@ -78,7 +78,7 @@ services:
       - cluster_network
 
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:2.9.0
+    image: opensearchproject/opensearch-dashboards:latest
     container_name: opensearch-dashboards
     ports:
       - "5601:5601"
