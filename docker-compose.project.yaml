@@ -8,8 +8,10 @@ services:
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "plugins.security.disabled=true"
+      - "OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE} -Xmx${JVM_HEAP_SIZE}" # Set min and max JVM heap sizes to at least 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}    # Sets the admin user password
+      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME}
+      - "plugins.security.disabled=${SECURITY_ENABLED}"
       - "network.host=0.0.0.0"
     ulimits:
       memlock:
@@ -18,8 +20,10 @@ services:
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
     ports:
-      - "9200:9200"
+      # - "9200:9200"
       - "9600:9600"
+    networks:
+      - cluster_network
 
   opensearch-node2:
     image: opensearchproject/opensearch:2.9.0
@@ -30,8 +34,10 @@ services:
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "plugins.security.disabled=true"
+      - "OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE} -Xmx${JVM_HEAP_SIZE}" # Set min and max JVM heap sizes to at least 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}    # Sets the admin user password
+      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME}
+      - "plugins.security.disabled=${SECURITY_ENABLED}"
       - "network.host=0.0.0.0"
     ulimits:
       memlock:
@@ -40,8 +46,10 @@ services:
     volumes:
       - opensearch-data2:/usr/share/opensearch/data
     ports:
-      - "9201:9200"
+      # - "9201:9200"
       - "9601:9600"
+    networks:
+      - cluster_network
 
   opensearch-node3:
     image: opensearchproject/opensearch:2.9.0
@@ -52,8 +60,10 @@ services:
       - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
       - cluster.initial_master_nodes=opensearch-node1,opensearch-node2,opensearch-node3
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "plugins.security.disabled=true"
+      - "OPENSEARCH_JAVA_OPTS=-Xms${JVM_HEAP_SIZE} -Xmx${JVM_HEAP_SIZE}" # Set min and max JVM heap sizes to at least 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}    # Sets the admin user password
+      - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME}
+      - "plugins.security.disabled=${SECURITY_ENABLED}"
       - "network.host=0.0.0.0"
     ulimits:
       memlock:
@@ -62,8 +72,10 @@ services:
     volumes:
       - opensearch-data3:/usr/share/opensearch/data
     ports:
-      - "9202:9200"
+      # - "9202:9200"
       - "9602:9600"
+    networks:
+      - cluster_network
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.9.0
@@ -76,6 +88,8 @@ services:
       - opensearch-node1
       - opensearch-node2
       - opensearch-node3
+    networks:
+      - cluster_network
 
   webapp:
     build: ./webapp
@@ -89,8 +103,14 @@ services:
       - opensearch-node1
       - opensearch-node2
       - opensearch-node3
+    networks:
+      - cluster_network
 
 volumes:
   opensearch-data1:
   opensearch-data2:
   opensearch-data3:
+
+networks:
+  cluster_network:
+    driver: bridge
