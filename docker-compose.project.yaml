@@ -17,7 +17,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - ${PROJECT_NAME:-opensearch}-data1:/usr/share/opensearch/data
+      - data1:/usr/share/opensearch/data
     ports:
       # - "9200:9200"
       - "9600:9600"
@@ -42,7 +42,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - ${PROJECT_NAME:-opensearch}-data2:/usr/share/opensearch/data
+      - data2:/usr/share/opensearch/data
     ports:
       # - "9201:9200"
       - "9601:9600"
@@ -105,8 +105,8 @@ services:
       - cluster_network
 
 volumes:
-  ${PROJECT_NAME:-opensearch}-data1:
-  ${PROJECT_NAME:-opensearch}-data2:
+  data1:
+  data2:
   # opensearch-data3:
 
 networks:
