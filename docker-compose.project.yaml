@@ -10,8 +10,8 @@ services:
       - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME:-admin}
       - plugins.security.disabled=${SECURITY_DISABLED:-true}
       - discovery.seed_hosts=${PROJECT_NAME:-opensearch}-node1,${PROJECT_NAME:-opensearch}-node2
-      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
-      - bootstrap.memory_lock=true
+      - cluster.initial_cluster_manager_nodes=${PROJECT_NAME:-opensearch}-node1,${PROJECT_NAME:-opensearch}-node2
+      - bootstrap.memory_lock=${MEMORY_LOCK:-true}
     ulimits:
       memlock:
         soft: -1
@@ -35,8 +35,8 @@ services:
       - OPENSEARCH_INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME:-admin}
       - plugins.security.disabled=${SECURITY_DISABLED:-true}
       - discovery.seed_hosts=${PROJECT_NAME:-opensearch}-node1,${PROJECT_NAME:-opensearch}-node2
-      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2
-      - bootstrap.memory_lock=true
+      - cluster.initial_cluster_manager_nodes=${PROJECT_NAME:-opensearch}-node1,${PROJECT_NAME:-opensearch}-node2
+      - bootstrap.memory_lock=${MEMORY_LOCK:-true}
     ulimits:
       memlock:
         soft: -1
