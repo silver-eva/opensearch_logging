@@ -77,14 +77,14 @@ services:
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:latest
-    container_name: opensearch-dashboards
+    container_name: ${PROJECT_NAME:-opensearch}-dashboards
     ports:
       - "5601:5601"
     environment:
-      OPENSEARCH_HOSTS: '["http://opensearch-node1:9200","http://opensearch-node2:9200"]' #',"http://opensearch-node3:9200"]'
+      OPENSEARCH_HOSTS: '["http://${PROJECT_NAME:-opensearch}-node1:9200","http://${PROJECT_NAME:-opensearch}-node2:9200"]' #',"http://opensearch-node3:9200"]'
     depends_on:
-      - opensearch-node1
-      - opensearch-node2
+      - node1
+      - node2
       # - opensearch-node3
     networks:
       - cluster_network
@@ -96,17 +96,19 @@ services:
       - "8080:8080"
     environment:
       - APP_PORT=8080
-      - OPENSEARCH_URL=http://opensearch-node1:9200,http://opensearch-node2:9200 #,http://opensearch-node3:9200
+      - OPENSEARCH_URL=http://${PROJECT_NAME:-opensearch}-node1:9200,http://${PROJECT_NAME:-opensearch}-node2:9200 #,http://opensearch-node3:9200
     depends_on:
-      - opensearch-node1
-      - opensearch-node2
+      - node1
+      - node2
       # - opensearch-node3
     networks:
       - cluster_network
 
 volumes:
   data1:
+    name: ${PROJECT_NAME:-opensearch}-data1
   data2:
+    name: ${PROJECT_NAME:-opensearch}-data2
   # opensearch-data3:
 
 networks:
